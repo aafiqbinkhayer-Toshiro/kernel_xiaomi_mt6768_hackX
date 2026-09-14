@@ -1,4 +1,4 @@
-Name: CI - Lancelot Kernel
+name: CI - Lancelot Kernel
 on:
   workflow_dispatch:
 
