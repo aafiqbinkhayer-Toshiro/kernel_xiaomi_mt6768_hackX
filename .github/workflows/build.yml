@@ -1,64 +1,19 @@
-name: Build Lancelot Kernel
-
+Name: CI - Lancelot Kernel
 on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build Kernel
+  build-kernel:
     runs-on: ubuntu-22.04
-
     steps:
-      - name: Checkout Kernel Source
-        uses: actions/checkout@v4
+      - name: Build
+        uses: dabao1955/kernel_build_action@main
         with:
-          repository: aafiqbinkhayer-Toshiro/kernel_xiaomi_mt6768_hackX
-          ref: genom-release
-          path: kernel
-
-      - name: Setup Build Environment
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential bc bison flex libssl-dev libncurses-dev git zip curl ccache libelf-dev
-
-      - name: Download Clang and GCC Toolchains
-        run: |
-          mkdir -p toolchains
-          cd toolchains
-          # Download AOSP Clang
-          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/ clang
-          # Download GCC 64-bit and 32-bit
-          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 gcc64
-          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 gcc32
-
-      - name: Setup KernelSU
-        run: |
-          cd kernel
-          curl -LSs "https://raw.githubusercontent.com/trsn/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
-
-      - name: Build Kernel
-        run: |
-          cd kernel
-          export PATH="$(pwd)/../toolchains/clang/bin:$(pwd)/../toolchains/gcc64/bin:$(pwd)/../toolchains/gcc32/bin:$PATH"
-          export ARCH=arm64
-          export SUBARCH=arm64
-          export CC=clang
-          export CLANG_TRIPLE=aarch64-linux-gnu-
-          export CROSS_COMPILE=aarch64-linux-android-
-          export CROSS_COMPILE_ARM32=arm-linux-androideabi-
-
-          make O=out lancelot_defconfig
-          make -j$(nproc --all) O=out
-
-      - name: Pack AnyKernel3
-        run: |
-          git clone --depth=1 https://github.com/osm0sis/AnyKernel3 AnyKernel3
-          cp kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/ || cp kernel/out/arch/arm64/boot/Image.gz AnyKernel3/ || cp kernel/out/arch/arm64/boot/Image AnyKernel3/
-          cd AnyKernel3
-          zip -r9 "../Lancelot-Kernel-KernelSU.zip" * -x .git\* README.md
-
-      - name: Upload Kernel Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Lancelot-Kernel-KernelSU
-          path: Lancelot-Kernel-KernelSU.zip
+          kernel-url: https://github.com/aafiqbinkhayer-Toshiro/kernel_xiaomi_mt6768_hackX
+          kernel-branch: genom-release
+          config: lancelot_defconfig
+          arch: arm64
+          aosp-gcc: true
+          aosp-clang: true
+          android-version: 11
+          anykernel3: true
