@@ -20,4 +20,4 @@ jobs:
           aosp-clang: true
           ksu: true
           ksu-version: v0.9.5
-          anykernel3: false
+          anykernel3: true
