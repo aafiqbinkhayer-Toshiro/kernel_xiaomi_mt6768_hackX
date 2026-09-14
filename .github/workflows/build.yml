@@ -12,7 +12,7 @@ jobs:
         uses: dabao1955/kernel_build_action@v1.6.1
         with:
           kernel-url: https://github.com/aafiqbinkhayer-Toshiro/kernel_xiaomi_mt6768_hackX
-          kernel-branch: genom-release
+          branch: genom-release
           config: lancelot_defconfig
           arch: arm64
           android-version: "11"
@@ -20,3 +20,4 @@ jobs:
           aosp-clang: true
           ksu: true
           ksu-version: v0.9.5
+          anykernel3: false
