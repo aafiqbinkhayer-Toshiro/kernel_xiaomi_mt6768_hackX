@@ -1,0 +1,19 @@
+name: CI - Lancelot Kernel (Eleven)
+on:
+  workflow_dispatch:
+
+jobs:
+  build-kernel:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Build
+        uses: dabao1955/kernel_build_action@main
+        with:
+          kernel-url: https://github.com/aafiqbinkhayer-Toshiro/kernel_xiaomi_mt6768_hackX
+          kernel-branch: eleven
+          config: lancelot_defconfig
+          arch: arm64
+          aosp-gcc: true
+          aosp-clang: true
+          android-version: 11
+          anykernel3: true
